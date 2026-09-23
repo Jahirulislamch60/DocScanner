@@ -1,0 +1,76 @@
+{
+  "expo": {
+    "name": "DocScanner",
+    "slug": "docscanner",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "docscanner",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F172A"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tajahir.docscanner",
+      "infoPlist": {
+        "NSCameraUsageDescription": "ডকুমেন্ট স্ক্যান করার জন্য ক্যামেরা প্রয়োজন।",
+        "NSPhotoLibraryUsageDescription": "স্ক্যান করা ডকুমেন্ট গ্যালারিতে সেভ করার জন্য প্রয়োজন।",
+        "NSPhotoLibraryAddUsageDescription": "স্ক্যান করা ডকুমেন্ট গ্যালারিতে সেভ করার জন্য প্রয়োজন।",
+        "NSFaceIDUsageDescription": "অ্যাপ আনলক করতে Face ID ব্যবহারের অনুমতি দিন।"
+      }
+    },
+    "android": {
+      "package": "com.tajahir.docscanner",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0F172A"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "ডকুমেন্ট স্ক্যান করার জন্য ক্যামেরা ব্যবহারের অনুমতি দিন।"
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "স্ক্যান করা ফাইল গ্যালারিতে সেভ করার অনুমতি দিন।",
+          "savePhotosPermission": "স্ক্যান করা ফাইল গ্যালারিতে সেভ করার অনুমতি দিন।"
+        }
+      ],
+      "@react-native-ml-kit/text-recognition",
+      "expo-dev-client",
+      "expo-secure-store",
+      "expo-local-authentication",
+      "react-native-document-scanner-plugin"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "googleOAuth": {
+        "web": "YOUR_WEB_CLIENT_ID.apps.googleusercontent.com",
+        "ios": "YOUR_IOS_CLIENT_ID.apps.googleusercontent.com",
+        "android": "YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com"
+      }
+    }
+  }
+}
