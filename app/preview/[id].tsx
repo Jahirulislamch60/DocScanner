@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import * as Sharing from "expo-sharing";
 import { ScanDocument } from "@/types";
 import { getDocument, saveDocument, listFolders, moveDocumentToFolder } from "@/lib/storage";
@@ -22,6 +23,7 @@ import { rotatePage } from "@/lib/imageProcessing";
 import { useIsOnline } from "@/lib/network";
 import { useGoogleDriveAuth } from "@/lib/googleAuth";
 import { backupDocumentToDrive, OfflineError } from "@/lib/cloudBackup";
+import { colors, gradients, radius, shadows } from "@/theme";
 
 export default function PreviewScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -51,7 +53,7 @@ export default function PreviewScreen() {
   if (!doc) {
     return (
       <View style={styles.centerFill}>
-        <ActivityIndicator color="#38BDF8" />
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
@@ -238,11 +240,11 @@ export default function PreviewScreen() {
           style={[styles.addMoreBtn, { flex: 1 }]}
           onPress={() => router.push({ pathname: "/scan", params: { docId: doc.id } })}
         >
-          <Ionicons name="add" size={18} color="#38BDF8" />
+          <Ionicons name="add" size={18} color={colors.primary} />
           <Text style={styles.addMoreText}>আরো পৃষ্ঠা যোগ করুন</Text>
         </Pressable>
         <Pressable style={[styles.addMoreBtn, { flex: 1 }]} onPress={onMoveToFolder}>
-          <Ionicons name="folder-outline" size={18} color="#38BDF8" />
+          <Ionicons name="folder-outline" size={18} color={colors.primary} />
           <Text style={styles.addMoreText}>ফোল্ডারে সরান</Text>
         </Pressable>
       </View>
@@ -260,28 +262,31 @@ export default function PreviewScreen() {
           disabled={busy !== null}
         >
           {busy === "ocr" ? (
-            <ActivityIndicator color="#38BDF8" />
+            <ActivityIndicator color={colors.primary} />
           ) : (
             <>
-              <Ionicons name="text" size={18} color="#38BDF8" />
+              <Ionicons name="text" size={18} color={colors.primary} />
               <Text style={styles.secondaryBtnText}>টেক্সট বের করুন</Text>
             </>
           )}
         </Pressable>
 
-        <Pressable
-          style={[styles.actionBtn, styles.primaryBtn]}
-          onPress={onExportPdf}
-          disabled={busy !== null}
-        >
-          {busy === "pdf" ? (
-            <ActivityIndicator color="#0F172A" />
-          ) : (
-            <>
-              <Ionicons name="share-outline" size={18} color="#0F172A" />
-              <Text style={styles.primaryBtnText}>PDF শেয়ার করুন</Text>
-            </>
-          )}
+        <Pressable style={{ flex: 1 }} onPress={onExportPdf} disabled={busy !== null}>
+          <LinearGradient
+            colors={gradients.brand}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.actionBtn}
+          >
+            {busy === "pdf" ? (
+              <ActivityIndicator color={colors.onPrimary} />
+            ) : (
+              <>
+                <Ionicons name="share-outline" size={18} color={colors.onPrimary} />
+                <Text style={styles.primaryBtnText}>PDF শেয়ার করুন</Text>
+              </>
+            )}
+          </LinearGradient>
         </Pressable>
       </View>
 
@@ -296,10 +301,10 @@ export default function PreviewScreen() {
           disabled={busy !== null || !isOnline}
         >
           {busy === "backup" ? (
-            <ActivityIndicator color="#38BDF8" />
+            <ActivityIndicator color={colors.primary} />
           ) : (
             <>
-              <Ionicons name="cloud-upload-outline" size={18} color="#38BDF8" />
+              <Ionicons name="cloud-upload-outline" size={18} color={colors.primary} />
               <Text style={styles.secondaryBtnText}>
                 {doc.driveFileId ? "Drive-এ আবার ব্যাকআপ করুন" : "Google Drive-এ ব্যাকআপ করুন"}
               </Text>
@@ -312,37 +317,43 @@ export default function PreviewScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0F172A" },
-  centerFill: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#0F172A" },
+  container: { flex: 1, backgroundColor: colors.bg },
+  centerFill: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: colors.bg },
   titleRow: { paddingHorizontal: 16, paddingTop: 16 },
   titleInput: {
-    color: "#F8FAFC",
+    color: colors.textPrimary,
     fontSize: 18,
     fontWeight: "700",
     borderBottomWidth: 1,
-    borderBottomColor: "#334155",
+    borderBottomColor: colors.border,
     paddingBottom: 6,
   },
   offlineBanner: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "#422006",
+    backgroundColor: colors.warningSoft,
     paddingVertical: 8,
     paddingHorizontal: 16,
   },
-  offlineBannerText: { color: "#FBBF24", fontSize: 12, flex: 1 },
+  offlineBannerText: { color: colors.warning, fontSize: 12, flex: 1 },
   syncedRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 8 },
-  syncedText: { color: "#4ADE80", fontSize: 12 },
+  syncedText: { color: colors.success, fontSize: 12 },
   pageCard: { width: 160 },
-  pageImage: { width: 160, height: 220, borderRadius: 10, backgroundColor: "#1E293B" },
-  pageLabel: { color: "#94A3B8", fontSize: 12, marginTop: 6, textAlign: "center" },
+  pageImage: {
+    width: 160,
+    height: 220,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    ...shadows.card,
+  },
+  pageLabel: { color: colors.textSecondary, fontSize: 12, marginTop: 6, textAlign: "center" },
   pageActions: { flexDirection: "row", justifyContent: "center", gap: 12, marginTop: 6 },
   pageActionBtn: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#1E293B",
+    backgroundColor: colors.surface,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -353,18 +364,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 6,
     paddingVertical: 10,
-    borderRadius: 10,
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: "#334155",
+    borderColor: colors.border,
     borderStyle: "dashed",
   },
-  addMoreText: { color: "#38BDF8", fontWeight: "600" },
+  addMoreText: { color: colors.primary, fontWeight: "600" },
   ocrBox: {
     margin: 16,
     padding: 12,
-    backgroundColor: "#1E293B",
-    borderRadius: 10,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
     maxHeight: 160,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
   },
   ocrText: { color: "#E2E8F0", fontSize: 13, lineHeight: 20 },
   actionsBar: {
@@ -380,10 +393,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
     paddingVertical: 14,
-    borderRadius: 12,
+    borderRadius: radius.lg,
   },
-  primaryBtn: { backgroundColor: "#38BDF8" },
-  primaryBtnText: { color: "#0F172A", fontWeight: "700" },
-  secondaryBtn: { backgroundColor: "#1E293B", borderWidth: 1, borderColor: "#334155" },
-  secondaryBtnText: { color: "#38BDF8", fontWeight: "700" },
+  primaryBtnText: { color: colors.onPrimary, fontWeight: "700" },
+  secondaryBtn: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
+  secondaryBtnText: { color: colors.primary, fontWeight: "700" },
 });
