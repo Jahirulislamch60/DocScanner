@@ -57,7 +57,7 @@ export function useGoogleDriveAuth() {
   const [loading, setLoading] = useState(false);
   const clientId = getClientId();
 
-  const redirectUri = AuthSession.makeRedirectUri({ scheme: "docscanner" });
+  const redirectUri = AuthSession.makeRedirectUri({ scheme: "scanvexa" });
 
   const signIn = useCallback(async (): Promise<string | null> => {
     if (!clientId) {

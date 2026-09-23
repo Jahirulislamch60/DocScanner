@@ -42,3 +42,33 @@ export async function backupDocumentToDrive(
     driveSyncedAt: Date.now(),
   };
 }
+
+/**
+ * Premium feature: back up every local document to Drive in one tap instead
+ * of opening each one and backing it up individually (the free-tier flow).
+ * Continues past individual failures so one bad document doesn't block the
+ * rest; returns which documents succeeded and which didn't.
+ */
+export async function backupAllDocumentsToDrive(
+  docs: ScanDocument[],
+  accessToken: string,
+  onProgress?: (done: number, total: number) => void
+): Promise<{ updated: ScanDocument[]; failed: ScanDocument[] }> {
+  if (!(await checkOnlineNow())) {
+    throw new OfflineError();
+  }
+
+  const updated: ScanDocument[] = [];
+  const failed: ScanDocument[] = [];
+
+  for (let i = 0; i < docs.length; i++) {
+    try {
+      updated.push(await backupDocumentToDrive(docs[i], accessToken));
+    } catch {
+      failed.push(docs[i]);
+    }
+    onProgress?.(i + 1, docs.length);
+  }
+
+  return { updated, failed };
+}
