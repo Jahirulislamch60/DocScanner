@@ -5,6 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { isLockEnabled, isUnlocked, markLocked } from "@/lib/appLock";
+import { initPurchases } from "@/lib/subscription";
 
 function LockGate() {
   const router = useRouter();
@@ -39,6 +40,11 @@ function LockGate() {
 }
 
 export default function RootLayout() {
+  useEffect(() => {
+    // No-ops silently until a real RevenueCat key is configured in app.json.
+    initPurchases();
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
@@ -57,6 +63,7 @@ export default function RootLayout() {
           <Stack.Screen name="scan-manual" options={{ title: "ম্যানুয়াল স্ক্যান", headerShown: false }} />
           <Stack.Screen name="preview/[id]" options={{ title: "প্রিভিউ" }} />
           <Stack.Screen name="settings" options={{ title: "সেটিংস" }} />
+          <Stack.Screen name="premium" options={{ title: "প্রিমিয়াম" }} />
           <Stack.Screen name="lock" options={{ title: "আনলক করুন", headerShown: false }} />
         </Stack>
       </SafeAreaProvider>

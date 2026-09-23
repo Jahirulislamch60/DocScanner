@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, TextInput, Alert, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import {
   isLockEnabled,
   setAppPin,
@@ -9,6 +10,7 @@ import {
 } from "@/lib/appLock";
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const [lockEnabled, setLockEnabled] = useState(false);
   const [bioAvailable, setBioAvailable] = useState(false);
   const [settingPin, setSettingPin] = useState(false);
@@ -63,6 +65,14 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
+      <Pressable style={styles.premiumRow} onPress={() => router.push("/premium")}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.rowTitle}>প্রিমিয়াম</Text>
+          <Text style={styles.rowSub}>এক-ট্যাপে সব ডকুমেন্ট Drive-এ ব্যাকআপ (ঐচ্ছিক)</Text>
+        </View>
+        <Ionicons name="chevron-forward" size={20} color="#64748B" />
+      </Pressable>
+
       <View style={styles.row}>
         <View style={{ flex: 1 }}>
           <Text style={styles.rowTitle}>অ্যাপ লক</Text>
@@ -132,6 +142,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E293B",
     borderRadius: 12,
     padding: 14,
+  },
+  premiumRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1E293B",
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#38BDF8",
   },
   rowTitle: { color: "#F8FAFC", fontSize: 15, fontWeight: "600" },
   rowSub: { color: "#94A3B8", fontSize: 12, marginTop: 2 },
