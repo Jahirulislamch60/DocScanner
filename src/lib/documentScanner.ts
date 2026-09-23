@@ -4,7 +4,7 @@ import DocumentScanner from "react-native-document-scanner-plugin";
  * Launches the OS-native document scanner UI:
  *  - Android: Google ML Kit Document Scanner (auto edge detection,
  *    perspective/"keystone" correction, multi-page capture, built-in
- *    cleanup filters) — same underlying tech CamScanner-style apps use.
+ *    cleanup filters) — Google's own official on-device scanning API.
  *  - iOS: Apple VisionKit's VNDocumentCameraViewController — same engine
  *    behind Apple's own Notes scanner.
  *
