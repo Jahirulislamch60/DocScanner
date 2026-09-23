@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "DocScanner",
-    "slug": "docscanner",
+    "name": "Scanvexa",
+    "slug": "scanvexa",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "docscanner",
+    "scheme": "scanvexa",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
@@ -15,7 +15,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.tajahir.docscanner",
+      "bundleIdentifier": "com.tajahir.scanvexa",
       "infoPlist": {
         "NSCameraUsageDescription": "ডকুমেন্ট স্ক্যান করার জন্য ক্যামেরা প্রয়োজন।",
         "NSPhotoLibraryUsageDescription": "স্ক্যান করা ডকুমেন্ট গ্যালারিতে সেভ করার জন্য প্রয়োজন।",
@@ -24,7 +24,7 @@
       }
     },
     "android": {
-      "package": "com.tajahir.docscanner",
+      "package": "com.tajahir.scanvexa",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0F172A"
@@ -70,6 +70,10 @@
         "web": "YOUR_WEB_CLIENT_ID.apps.googleusercontent.com",
         "ios": "YOUR_IOS_CLIENT_ID.apps.googleusercontent.com",
         "android": "YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com"
+      },
+      "revenueCat": {
+        "ios": "YOUR_REVENUECAT_IOS_API_KEY",
+        "android": "YOUR_REVENUECAT_ANDROID_API_KEY"
       }
     }
   }
