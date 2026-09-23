@@ -11,10 +11,12 @@ import {
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import * as FileSystem from "expo-file-system";
 import { processPage } from "@/lib/imageProcessing";
 import { saveDocument, getDocument, newId, ensureDocsDir, DOCS_DIR } from "@/lib/storage";
 import { ScanDocument, ScanPage } from "@/types";
+import { colors, gradients, radius } from "@/theme";
 
 export default function ScanManualScreen() {
   const router = useRouter();
@@ -32,10 +34,17 @@ export default function ScanManualScreen() {
   if (!permission.granted) {
     return (
       <View style={[styles.container, styles.center]}>
-        <Ionicons name="camera-outline" size={48} color="#94A3B8" />
+        <Ionicons name="camera-outline" size={48} color={colors.textSecondary} />
         <Text style={styles.permText}>স্ক্যান করার জন্য ক্যামেরা অনুমতি প্রয়োজন</Text>
-        <Pressable style={styles.permButton} onPress={requestPermission}>
-          <Text style={styles.permButtonText}>অনুমতি দিন</Text>
+        <Pressable onPress={requestPermission}>
+          <LinearGradient
+            colors={gradients.brand}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.permButton}
+          >
+            <Text style={styles.permButtonText}>অনুমতি দিন</Text>
+          </LinearGradient>
         </Pressable>
       </View>
     );
@@ -142,21 +151,28 @@ export default function ScanManualScreen() {
           disabled={capturing}
         >
           {capturing ? (
-            <ActivityIndicator color="#0F172A" />
+            <ActivityIndicator color={colors.bg} />
           ) : (
             <View style={styles.shutterInner} />
           )}
         </Pressable>
         <Pressable
-          style={[styles.doneButton, pages.length === 0 && { opacity: 0.4 }]}
           onPress={finish}
           disabled={pages.length === 0 || finishing}
+          style={pages.length === 0 && { opacity: 0.4 }}
         >
-          {finishing ? (
-            <ActivityIndicator color="#0F172A" />
-          ) : (
-            <Text style={styles.doneText}>শেষ</Text>
-          )}
+          <LinearGradient
+            colors={gradients.brand}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.doneButton}
+          >
+            {finishing ? (
+              <ActivityIndicator color={colors.onPrimary} />
+            ) : (
+              <Text style={styles.doneText}>শেষ</Text>
+            )}
+          </LinearGradient>
         </Pressable>
       </View>
     </View>
@@ -168,12 +184,11 @@ const styles = StyleSheet.create({
   center: { alignItems: "center", justifyContent: "center", gap: 12, paddingHorizontal: 32 },
   permText: { color: "#CBD5E1", textAlign: "center" },
   permButton: {
-    backgroundColor: "#38BDF8",
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 10,
+    borderRadius: radius.md,
   },
-  permButtonText: { color: "#0F172A", fontWeight: "700" },
+  permButtonText: { color: colors.onPrimary, fontWeight: "700" },
   guideFrame: {
     position: "absolute",
     top: "12%",
@@ -181,7 +196,7 @@ const styles = StyleSheet.create({
     right: "6%",
     bottom: "22%",
     borderWidth: 2,
-    borderColor: "rgba(56,189,248,0.85)",
+    borderColor: "rgba(196,148,255,0.85)",
     borderRadius: 12,
   },
   topBar: {
@@ -234,15 +249,14 @@ const styles = StyleSheet.create({
     height: 62,
     borderRadius: 31,
     borderWidth: 3,
-    borderColor: "#0F172A",
+    borderColor: colors.primary,
   },
   doneButton: {
     width: 64,
     height: 44,
-    borderRadius: 10,
-    backgroundColor: "#38BDF8",
+    borderRadius: radius.md,
     alignItems: "center",
     justifyContent: "center",
   },
-  doneText: { color: "#0F172A", fontWeight: "700" },
+  doneText: { color: colors.onPrimary, fontWeight: "700" },
 });

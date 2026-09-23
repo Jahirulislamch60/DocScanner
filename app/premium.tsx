@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, ActivityIndicator, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import type { PurchasesPackage } from "react-native-purchases";
+import { colors, gradients, radius, spacing, shadows } from "@/theme";
 import {
   initPurchases,
   isPurchasesConfigured,
@@ -110,14 +112,22 @@ export default function PremiumScreen() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator color="#38BDF8" />
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Ionicons name="cloud-upload-outline" size={48} color="#38BDF8" />
+      <View style={styles.heroIconCircle}>
+        <LinearGradient
+          colors={gradients.brand}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+        <Ionicons name="cloud-upload-outline" size={40} color={colors.onPrimary} />
+      </View>
       <Text style={styles.title}>প্রিমিয়াম</Text>
       <Text style={styles.benefit}>এক-ট্যাপে সব ডকুমেন্ট Google Drive-এ ব্যাকআপ</Text>
       <Text style={styles.desc}>
@@ -139,14 +149,21 @@ export default function PremiumScreen() {
         </View>
       ) : (
         <>
-          <Pressable style={styles.subscribeBtn} onPress={onSubscribe} disabled={busy || !pkg}>
-            {busy ? (
-              <ActivityIndicator color="#0F172A" />
-            ) : (
-              <Text style={styles.subscribeBtnText}>
-                {pkg ? `সাবস্ক্রাইব করুন — ${pkg.product.priceString}/মাস` : "প্যাকেজ লোড হচ্ছে…"}
-              </Text>
-            )}
+          <Pressable onPress={onSubscribe} disabled={busy || !pkg}>
+            <LinearGradient
+              colors={gradients.brand}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[styles.subscribeBtn, (busy || !pkg) && { opacity: 0.6 }]}
+            >
+              {busy ? (
+                <ActivityIndicator color={colors.onPrimary} />
+              ) : (
+                <Text style={styles.subscribeBtnText}>
+                  {pkg ? `সাবস্ক্রাইব করুন — ${pkg.product.priceString}/মাস` : "প্যাকেজ লোড হচ্ছে…"}
+                </Text>
+              )}
+            </LinearGradient>
           </Pressable>
           <Pressable onPress={onRestore} disabled={busy}>
             <Text style={styles.restoreText}>আগের সাবস্ক্রিপশন পুনরুদ্ধার করুন</Text>
@@ -155,20 +172,27 @@ export default function PremiumScreen() {
       )}
 
       {isPremium && (
-        <Pressable style={styles.backupBtn} onPress={onBackupAll} disabled={backingUp}>
-          {backingUp ? (
-            <>
-              <ActivityIndicator color="#0F172A" />
-              {progress && (
-                <Text style={styles.backupBtnText}>
-                  {" "}
-                  {progress.done}/{progress.total}
-                </Text>
-              )}
-            </>
-          ) : (
-            <Text style={styles.backupBtnText}>সব ডকুমেন্ট এখনই ব্যাকআপ করুন</Text>
-          )}
+        <Pressable onPress={onBackupAll} disabled={backingUp}>
+          <LinearGradient
+            colors={gradients.success}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[styles.backupBtn, backingUp && { opacity: 0.7 }]}
+          >
+            {backingUp ? (
+              <>
+                <ActivityIndicator color={colors.bg} />
+                {progress && (
+                  <Text style={styles.backupBtnText}>
+                    {" "}
+                    {progress.done}/{progress.total}
+                  </Text>
+                )}
+              </>
+            ) : (
+              <Text style={styles.backupBtnText}>সব ডকুমেন্ট এখনই ব্যাকআপ করুন</Text>
+            )}
+          </LinearGradient>
         </Pressable>
       )}
     </View>
@@ -178,56 +202,66 @@ export default function PremiumScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F172A",
+    backgroundColor: colors.bg,
     alignItems: "center",
-    padding: 24,
+    padding: spacing.xl,
     paddingTop: 60,
     gap: 10,
   },
-  center: { flex: 1, backgroundColor: "#0F172A", alignItems: "center", justifyContent: "center" },
-  title: { color: "#F8FAFC", fontSize: 22, fontWeight: "700", marginTop: 8 },
-  benefit: { color: "#38BDF8", fontSize: 15, fontWeight: "600", textAlign: "center", marginTop: 4 },
+  center: { flex: 1, backgroundColor: colors.bg, alignItems: "center", justifyContent: "center" },
+  heroIconCircle: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    ...shadows.glow,
+  },
+  title: { color: colors.textPrimary, fontSize: 22, fontWeight: "700", marginTop: 8 },
+  benefit: { color: colors.primary, fontSize: 15, fontWeight: "600", textAlign: "center", marginTop: 4 },
   desc: {
-    color: "#94A3B8",
+    color: colors.textSecondary,
     fontSize: 13,
     textAlign: "center",
     lineHeight: 20,
     marginTop: 4,
     marginBottom: 12,
   },
-  notice: { color: "#FBBF24", fontSize: 12, textAlign: "center", marginTop: 12, lineHeight: 18 },
+  notice: { color: colors.warning, fontSize: 12, textAlign: "center", marginTop: 12, lineHeight: 18 },
   activeBadge: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "#14532D",
+    backgroundColor: colors.successSoft,
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 10,
+    borderRadius: radius.md,
     marginTop: 8,
+    borderWidth: 1,
+    borderColor: "rgba(74, 222, 128, 0.35)",
   },
-  activeText: { color: "#4ADE80", fontWeight: "600" },
+  activeText: { color: colors.success, fontWeight: "600" },
   subscribeBtn: {
-    backgroundColor: "#38BDF8",
     paddingVertical: 14,
     paddingHorizontal: 24,
-    borderRadius: 12,
+    borderRadius: radius.lg,
     marginTop: 12,
     minWidth: 240,
     alignItems: "center",
+    ...shadows.glow,
   },
-  subscribeBtnText: { color: "#0F172A", fontWeight: "700", fontSize: 15 },
-  restoreText: { color: "#64748B", fontSize: 12, marginTop: 14, textDecorationLine: "underline" },
+  subscribeBtnText: { color: colors.onPrimary, fontWeight: "700", fontSize: 15 },
+  restoreText: { color: colors.textMuted, fontSize: 12, marginTop: 14, textDecorationLine: "underline" },
   backupBtn: {
     flexDirection: "row",
-    backgroundColor: "#4ADE80",
     paddingVertical: 14,
     paddingHorizontal: 24,
-    borderRadius: 12,
+    borderRadius: radius.lg,
     marginTop: 20,
     minWidth: 240,
     alignItems: "center",
     justifyContent: "center",
   },
-  backupBtnText: { color: "#0F172A", fontWeight: "700", fontSize: 15 },
+  backupBtnText: { color: colors.bg, fontWeight: "700", fontSize: 15 },
 });

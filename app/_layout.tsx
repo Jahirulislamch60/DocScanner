@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { isLockEnabled, isUnlocked, markLocked } from "@/lib/appLock";
 import { initPurchases } from "@/lib/subscription";
+import { colors } from "@/theme";
 
 function LockGate() {
   const router = useRouter();
@@ -52,10 +53,10 @@ export default function RootLayout() {
         <LockGate />
         <Stack
           screenOptions={{
-            headerStyle: { backgroundColor: "#0F172A" },
-            headerTintColor: "#F8FAFC",
+            headerStyle: { backgroundColor: colors.bg },
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: { fontWeight: "600" },
-            contentStyle: { backgroundColor: "#0F172A" },
+            contentStyle: { backgroundColor: colors.bg },
           }}
         >
           <Stack.Screen name="index" options={{ title: "ডকুমেন্ট স্ক্যানার" }} />

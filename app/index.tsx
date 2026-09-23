@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { ScanDocument, Folder } from "@/types";
 import {
   listDocuments,
@@ -21,6 +22,37 @@ import {
   deleteDocument,
 } from "@/lib/storage";
 import { useIsOnline } from "@/lib/network";
+import { colors, gradients, radius, spacing, shadows } from "@/theme";
+
+function Chip({
+  label,
+  active,
+  onPress,
+}: {
+  label: string;
+  active: boolean;
+  onPress: () => void;
+}) {
+  if (active) {
+    return (
+      <Pressable onPress={onPress}>
+        <LinearGradient
+          colors={gradients.brandSoft}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.chip}
+        >
+          <Text style={styles.chipTextActive}>{label}</Text>
+        </LinearGradient>
+      </Pressable>
+    );
+  }
+  return (
+    <Pressable style={[styles.chip, styles.chipInactive]} onPress={onPress}>
+      <Text style={styles.chipText}>{label}</Text>
+    </Pressable>
+  );
+}
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -95,24 +127,14 @@ export default function HomeScreen() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.chipRow}
       >
-        <Pressable
-          style={[styles.chip, !selectedFolder && styles.chipActive]}
-          onPress={() => setSelectedFolder(undefined)}
-        >
-          <Text style={[styles.chipText, !selectedFolder && styles.chipTextActive]}>সব</Text>
-        </Pressable>
+        <Chip label="সব" active={!selectedFolder} onPress={() => setSelectedFolder(undefined)} />
         {folders.map((f) => (
-          <Pressable
+          <Chip
             key={f.id}
-            style={[styles.chip, selectedFolder === f.id && styles.chipActive]}
+            label={f.name}
+            active={selectedFolder === f.id}
             onPress={() => setSelectedFolder(f.id)}
-          >
-            <Text
-              style={[styles.chipText, selectedFolder === f.id && styles.chipTextActive]}
-            >
-              {f.name}
-            </Text>
-          </Pressable>
+          />
         ))}
         {addingFolder ? (
           <View style={styles.newFolderRow}>
@@ -133,15 +155,17 @@ export default function HomeScreen() {
             </Pressable>
           </View>
         ) : (
-          <Pressable style={styles.chip} onPress={() => setAddingFolder(true)}>
-            <Ionicons name="add" size={16} color="#38BDF8" />
+          <Pressable style={[styles.chip, styles.chipInactive]} onPress={() => setAddingFolder(true)}>
+            <Ionicons name="add" size={16} color={colors.primary} />
           </Pressable>
         )}
       </ScrollView>
 
       {docs.length === 0 && !loading ? (
         <View style={styles.empty}>
-          <Ionicons name="document-outline" size={56} color="#475569" />
+          <View style={styles.emptyIconCircle}>
+            <Ionicons name="document-text-outline" size={40} color={colors.primary} />
+          </View>
           <Text style={styles.emptyText}>এখানে এখনো কোনো ডকুমেন্ট নেই</Text>
           <Text style={styles.emptySub}>নিচের বাটনে চেপে প্রথম স্ক্যানটি করুন</Text>
         </View>
@@ -177,56 +201,72 @@ export default function HomeScreen() {
       )}
 
       <Pressable
-        style={styles.fab}
         onPress={() => router.push({ pathname: "/scan", params: { folderId: selectedFolder ?? "" } })}
+        style={styles.fabWrap}
       >
-        <Ionicons name="camera" size={28} color="#0F172A" />
+        <LinearGradient
+          colors={gradients.brand}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.fab}
+        >
+          <Ionicons name="camera" size={28} color={colors.onPrimary} />
+        </LinearGradient>
       </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0F172A" },
+  container: { flex: 1, backgroundColor: colors.bg },
   offlineBanner: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "#422006",
+    backgroundColor: colors.warningSoft,
     paddingVertical: 8,
     paddingHorizontal: 16,
   },
-  offlineBannerText: { color: "#FBBF24", fontSize: 12 },
+  offlineBannerText: { color: colors.warning, fontSize: 12 },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
   },
-  headerTitle: { color: "#F8FAFC", fontSize: 15, fontWeight: "700" },
-  settingsBtn: { padding: 4 },
-  chipRow: { paddingHorizontal: 16, paddingVertical: 12, gap: 8, alignItems: "center" },
+  headerTitle: { color: colors.textPrimary, fontSize: 15, fontWeight: "700" },
+  settingsBtn: {
+    padding: 6,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+  },
+  chipRow: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md, gap: 8, alignItems: "center" },
   chip: {
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 18,
-    backgroundColor: "#1E293B",
+    borderRadius: radius.pill,
     marginRight: 8,
   },
-  chipActive: { backgroundColor: "#38BDF8" },
-  chipText: { color: "#CBD5E1", fontSize: 13, fontWeight: "600" },
-  chipTextActive: { color: "#0F172A" },
+  chipInactive: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
+  },
+  chipText: { color: colors.textSecondary, fontSize: 13, fontWeight: "600" },
+  chipTextActive: { color: colors.onPrimary, fontSize: 13, fontWeight: "700" },
   newFolderRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "#1E293B",
-    borderRadius: 18,
+    backgroundColor: colors.surface,
+    borderRadius: radius.pill,
     paddingHorizontal: 10,
     paddingVertical: 4,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
   },
-  newFolderInput: { color: "#F8FAFC", minWidth: 100, fontSize: 13 },
+  newFolderInput: { color: colors.textPrimary, minWidth: 100, fontSize: 13 },
   empty: {
     flex: 1,
     alignItems: "center",
@@ -234,34 +274,46 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 32,
   },
-  emptyText: { color: "#CBD5E1", fontSize: 16, fontWeight: "600", marginTop: 12 },
-  emptySub: { color: "#64748B", fontSize: 13, textAlign: "center" },
+  emptyIconCircle: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: colors.primarySoft,
+    borderWidth: 1,
+    borderColor: colors.primarySoftBorder,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 6,
+  },
+  emptyText: { color: colors.textPrimary, fontSize: 16, fontWeight: "700", marginTop: 12 },
+  emptySub: { color: colors.textMuted, fontSize: 13, textAlign: "center" },
   card: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "#1E293B",
-    borderRadius: 14,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
     padding: 10,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
+    ...shadows.card,
   },
-  thumb: { width: 52, height: 68, borderRadius: 8, backgroundColor: "#334155" },
+  thumb: { width: 52, height: 68, borderRadius: radius.sm, backgroundColor: colors.surfaceRaised },
   thumbPlaceholder: { alignItems: "center", justifyContent: "center" },
-  cardTitle: { color: "#F8FAFC", fontSize: 15, fontWeight: "600" },
-  cardMeta: { color: "#94A3B8", fontSize: 12, marginTop: 2 },
-  fab: {
+  cardTitle: { color: colors.textPrimary, fontSize: 15, fontWeight: "600" },
+  cardMeta: { color: colors.textSecondary, fontSize: 12, marginTop: 2 },
+  fabWrap: {
     position: "absolute",
     right: 20,
     bottom: 28,
+    borderRadius: 32,
+    ...shadows.glow,
+  },
+  fab: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "#38BDF8",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 6,
   },
 });

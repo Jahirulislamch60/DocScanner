@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   verifyPin,
   markUnlocked,
   isBiometricAvailable,
   tryBiometricUnlock,
 } from "@/lib/appLock";
+import { colors, gradients, shadows } from "@/theme";
 
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "del"];
 
@@ -57,8 +59,16 @@ export default function LockScreen() {
 
   return (
     <View style={styles.container}>
-      <Ionicons name="lock-closed" size={40} color="#38BDF8" />
-      <Text style={styles.title}>DocScanner লক করা আছে</Text>
+      <View style={styles.iconCircle}>
+        <LinearGradient
+          colors={gradients.brand}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+        <Ionicons name="lock-closed" size={32} color={colors.onPrimary} />
+      </View>
+      <Text style={styles.title}>Scanvexa লক করা আছে</Text>
       <Text style={styles.subtitle}>PIN দিন{bioAvailable ? " অথবা ফিঙ্গারপ্রিন্ট/ফেস আইডি ব্যবহার করুন" : ""}</Text>
 
       <View style={styles.dots}>
@@ -95,7 +105,7 @@ export default function LockScreen() {
 
       {bioAvailable && (
         <Pressable style={styles.bioBtn} onPress={attemptBiometric}>
-          <Ionicons name="finger-print" size={20} color="#38BDF8" />
+          <Ionicons name="finger-print" size={20} color={colors.primary} />
           <Text style={styles.bioBtnText}>বায়োমেট্রিক দিয়ে আনলক করুন</Text>
         </Pressable>
       )}
@@ -106,25 +116,35 @@ export default function LockScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F172A",
+    backgroundColor: colors.bg,
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
     paddingHorizontal: 32,
   },
-  title: { color: "#F8FAFC", fontSize: 18, fontWeight: "700", marginTop: 8 },
-  subtitle: { color: "#94A3B8", fontSize: 13, marginBottom: 12, textAlign: "center" },
+  iconCircle: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    marginBottom: 4,
+    ...shadows.glow,
+  },
+  title: { color: colors.textPrimary, fontSize: 18, fontWeight: "700", marginTop: 8 },
+  subtitle: { color: colors.textSecondary, fontSize: 13, marginBottom: 12, textAlign: "center" },
   dots: { flexDirection: "row", gap: 14, marginBottom: 8 },
   dot: {
     width: 14,
     height: 14,
     borderRadius: 7,
     borderWidth: 1.5,
-    borderColor: "#475569",
+    borderColor: colors.border,
   },
-  dotFilled: { backgroundColor: "#38BDF8", borderColor: "#38BDF8" },
-  dotError: { borderColor: "#F87171" },
-  errorText: { color: "#F87171", fontSize: 12, marginBottom: 8 },
+  dotFilled: { backgroundColor: colors.primary, borderColor: colors.primary },
+  dotError: { borderColor: colors.danger },
+  errorText: { color: colors.danger, fontSize: 12, marginBottom: 8 },
   keypad: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -139,12 +159,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   keyEmpty: {},
-  keyText: { color: "#F8FAFC", fontSize: 24, fontWeight: "500" },
+  keyText: { color: colors.textPrimary, fontSize: 24, fontWeight: "500" },
   bioBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
     marginTop: 20,
   },
-  bioBtnText: { color: "#38BDF8", fontWeight: "600" },
+  bioBtnText: { color: colors.primary, fontWeight: "600" },
 });

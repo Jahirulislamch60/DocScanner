@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { View, Text, StyleSheet, ActivityIndicator, Pressable } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import * as FileSystem from "expo-file-system";
 import { scanWithNativeEdgeDetection } from "@/lib/documentScanner";
 import { processPage } from "@/lib/imageProcessing";
 import { saveDocument, getDocument, newId, ensureDocsDir, DOCS_DIR } from "@/lib/storage";
 import { ScanDocument, ScanPage } from "@/types";
+import { colors, gradients, radius } from "@/theme";
 
 type Phase = "starting" | "processing" | "error" | "empty";
 
@@ -88,10 +90,9 @@ export default function ScanScreen() {
   if (phase === "error") {
     return (
       <View style={styles.container}>
-        <Ionicons name="alert-circle-outline" size={48} color="#FBBF24" />
+        <Ionicons name="alert-circle-outline" size={48} color={colors.warning} />
         <Text style={styles.errorText}>{errorMessage}</Text>
         <Pressable
-          style={styles.manualBtn}
           onPress={() =>
             router.replace({
               pathname: "/scan-manual",
@@ -99,8 +100,15 @@ export default function ScanScreen() {
             })
           }
         >
-          <Ionicons name="camera-outline" size={18} color="#0F172A" />
-          <Text style={styles.manualBtnText}>ম্যানুয়াল ক্যামেরা ব্যবহার করুন</Text>
+          <LinearGradient
+            colors={gradients.brand}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.manualBtn}
+          >
+            <Ionicons name="camera-outline" size={18} color={colors.onPrimary} />
+            <Text style={styles.manualBtnText}>ম্যানুয়াল ক্যামেরা ব্যবহার করুন</Text>
+          </LinearGradient>
         </Pressable>
         <Pressable style={styles.cancelBtn} onPress={() => router.back()}>
           <Text style={styles.cancelBtnText}>বাতিল</Text>
@@ -111,7 +119,7 @@ export default function ScanScreen() {
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color="#38BDF8" />
+      <ActivityIndicator size="large" color={colors.primary} />
       <Text style={styles.statusText}>
         {phase === "processing" ? "পৃষ্ঠা প্রসেস করা হচ্ছে..." : "স্ক্যানার চালু হচ্ছে..."}
       </Text>
@@ -122,25 +130,24 @@ export default function ScanScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F172A",
+    backgroundColor: colors.bg,
     alignItems: "center",
     justifyContent: "center",
     gap: 14,
     paddingHorizontal: 32,
   },
-  statusText: { color: "#94A3B8" },
+  statusText: { color: colors.textSecondary },
   errorText: { color: "#E2E8F0", textAlign: "center", lineHeight: 20 },
   manualBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "#38BDF8",
     paddingHorizontal: 20,
     paddingVertical: 12,
-    borderRadius: 10,
+    borderRadius: radius.md,
     marginTop: 8,
   },
-  manualBtnText: { color: "#0F172A", fontWeight: "700" },
+  manualBtnText: { color: colors.onPrimary, fontWeight: "700" },
   cancelBtn: { paddingVertical: 10 },
-  cancelBtnText: { color: "#94A3B8" },
+  cancelBtnText: { color: colors.textSecondary },
 });

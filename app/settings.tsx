@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, TextInput, Alert, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   isLockEnabled,
   setAppPin,
   disableAppLock,
   isBiometricAvailable,
 } from "@/lib/appLock";
+import { colors, gradients, radius, spacing } from "@/theme";
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -65,12 +67,22 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.premiumRow} onPress={() => router.push("/premium")}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.rowTitle}>প্রিমিয়াম</Text>
-          <Text style={styles.rowSub}>এক-ট্যাপে সব ডকুমেন্ট Drive-এ ব্যাকআপ (ঐচ্ছিক)</Text>
-        </View>
-        <Ionicons name="chevron-forward" size={20} color="#64748B" />
+      <Pressable onPress={() => router.push("/premium")}>
+        <LinearGradient
+          colors={gradients.brandSoft}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.premiumRow}
+        >
+          <View style={styles.premiumIconCircle}>
+            <Ionicons name="sparkles" size={18} color={colors.onPrimary} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.premiumTitle}>প্রিমিয়াম</Text>
+            <Text style={styles.premiumSub}>এক-ট্যাপে সব ডকুমেন্ট Drive-এ ব্যাকআপ (ঐচ্ছিক)</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.8)" />
+        </LinearGradient>
       </Pressable>
 
       <View style={styles.row}>
@@ -80,12 +92,17 @@ export default function SettingsScreen() {
             PIN{bioAvailable ? " / বায়োমেট্রিক" : ""} দিয়ে পুরো অ্যাপ সুরক্ষিত করুন
           </Text>
         </View>
-        <Switch value={lockEnabled} onValueChange={onToggleLock} />
+        <Switch
+          value={lockEnabled}
+          onValueChange={onToggleLock}
+          trackColor={{ false: colors.border, true: colors.primary }}
+          thumbColor={colors.onPrimary}
+        />
       </View>
 
       {settingPin && (
         <View style={styles.pinSetup}>
-          <Ionicons name="keypad-outline" size={28} color="#38BDF8" />
+          <Ionicons name="keypad-outline" size={28} color={colors.primary} />
           <Text style={styles.pinLabel}>নতুন ৪-সংখ্যার PIN দিন</Text>
           <TextInput
             style={styles.pinInput}
@@ -119,8 +136,15 @@ export default function SettingsScreen() {
             >
               <Text style={styles.cancelBtnText}>বাতিল</Text>
             </Pressable>
-            <Pressable style={styles.saveBtn} onPress={savePin}>
-              <Text style={styles.saveBtnText}>সেভ করুন</Text>
+            <Pressable onPress={savePin}>
+              <LinearGradient
+                colors={gradients.brand}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.saveBtn}
+              >
+                <Text style={styles.saveBtnText}>সেভ করুন</Text>
+              </LinearGradient>
             </Pressable>
           </View>
         </View>
@@ -135,54 +159,65 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0F172A", padding: 16 },
+  container: { flex: 1, backgroundColor: colors.bg, padding: spacing.lg },
   row: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#1E293B",
-    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
     padding: 14,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
   },
   premiumRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#1E293B",
-    borderRadius: 12,
+    gap: 12,
+    borderRadius: radius.lg,
     padding: 14,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "#38BDF8",
+    marginBottom: spacing.md,
   },
-  rowTitle: { color: "#F8FAFC", fontSize: 15, fontWeight: "600" },
-  rowSub: { color: "#94A3B8", fontSize: 12, marginTop: 2 },
+  premiumIconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  premiumTitle: { color: colors.onPrimary, fontSize: 15, fontWeight: "700" },
+  premiumSub: { color: "rgba(255,255,255,0.85)", fontSize: 12, marginTop: 2 },
+  rowTitle: { color: colors.textPrimary, fontSize: 15, fontWeight: "600" },
+  rowSub: { color: colors.textSecondary, fontSize: 12, marginTop: 2 },
   pinSetup: {
     marginTop: 20,
-    backgroundColor: "#1E293B",
-    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
     padding: 20,
     alignItems: "center",
     gap: 8,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
   },
   pinLabel: { color: "#CBD5E1", fontSize: 13, marginTop: 8 },
   pinInput: {
-    color: "#F8FAFC",
+    color: colors.textPrimary,
     fontSize: 22,
     letterSpacing: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#334155",
+    borderBottomColor: colors.border,
     width: 120,
     textAlign: "center",
     paddingVertical: 6,
   },
   pinActions: { flexDirection: "row", gap: 12, marginTop: 16 },
   cancelBtn: { paddingVertical: 10, paddingHorizontal: 18 },
-  cancelBtnText: { color: "#94A3B8" },
+  cancelBtnText: { color: colors.textSecondary },
   saveBtn: {
-    backgroundColor: "#38BDF8",
     paddingVertical: 10,
     paddingHorizontal: 18,
-    borderRadius: 10,
+    borderRadius: radius.sm,
   },
-  saveBtnText: { color: "#0F172A", fontWeight: "700" },
-  footnote: { color: "#64748B", fontSize: 12, marginTop: 24, lineHeight: 18 },
+  saveBtnText: { color: colors.onPrimary, fontWeight: "700" },
+  footnote: { color: colors.textMuted, fontSize: 12, marginTop: 24, lineHeight: 18 },
 });
