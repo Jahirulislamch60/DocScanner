@@ -1,20 +1,46 @@
-# থার্ড-পার্টি লাইসেন্স
+# থার্ড-পার্টি লাইসেন্স ও নিরাপত্তা অডিট
 
-কপিরাইট/লাইসেন্স ঝুঁকি এড়ানোর জন্য এই তালিকা রাখা হলো — এই অ্যাপে ব্যবহৃত সব বাইরের লাইব্রেরি **permissive ওপেন-সোর্স লাইসেন্সের** (মূলত MIT), যেগুলো বাণিজ্যিকভাবে ব্যবহার, পরিবর্তন ও ক্লোজড-সোর্স অ্যাপে বান্ডল করার অনুমতি দেয়, কোনো "copyleft" শর্ত (যেমন GPL) ছাড়াই — অর্থাৎ এগুলোর জন্য অ্যাপের নিজের সোর্স কোড পাবলিশ করার কোনো বাধ্যবাধকতা নেই।
+কপিরাইট/লাইসেন্স ঝুঁকি এড়ানোর জন্য এই তালিকা রাখা হলো — এই অ্যাপে ব্যবহৃত সব বাইরের লাইব্রেরি **permissive ওপেন-সোর্স লাইসেন্সের** (মূলত MIT), যেগুলো বাণিজ্যিকভাবে ব্যবহার, পরিবর্তন ও ক্লোজড-সোর্স অ্যাপে বান্ডল করার অনুমতি দেয়, কোনো "copyleft" শর্ত (যেমন GPL/AGPL) ছাড়াই — অর্থাৎ এগুলোর জন্য অ্যাপের নিজের সোর্স কোড পাবলিশ করার কোনো বাধ্যবাধকতা নেই।
 
-| লাইব্রেরি | লাইসেন্স | ব্যবহার |
-|---|---|---|
-| Expo SDK ও সব `expo-*` প্যাকেজ | MIT | ক্যামেরা, ফাইল সিস্টেম, রাউটিং, ইত্যাদি |
-| React, React Native | MIT | কোর ফ্রেমওয়ার্ক |
-| `react-native-document-scanner-plugin` | MIT | নেটিভ এজ-ডিটেকশন স্ক্যান (Google ML Kit / Apple VisionKit-এর wrapper) |
-| `@react-native-ml-kit/text-recognition` | MIT | OCR (Google ML Kit-এর wrapper) |
-| `pdf-lib` | MIT | on-device PDF তৈরি |
-| `react-native-purchases` (RevenueCat) | MIT | সাবস্ক্রিপশন |
-| `@react-native-async-storage/async-storage` | MIT | লোকাল স্টোরেজ |
-| `@expo/vector-icons` (Ionicons) | MIT | আইকন |
-| `react-native-reanimated`, `react-native-gesture-handler`, `react-native-screens`, `react-native-safe-area-context` | MIT | UI/নেভিগেশন |
+## লাইসেন্স তালিকা (২৬ সেপ্টেম্বর ২০২৬ তারিখে যাচাই করা)
 
-**নোট:**
-- Google ML Kit ও Apple VisionKit নিজেরাই Google/Apple-এর অফিসিয়াল অন-ডিভাইস SDK — এগুলো তাদের নিজস্ব শর্তে ব্যবহারযোগ্য, ডেভেলপারদের জন্য উন্মুক্ত, এবং এই কোড শুধু তাদের প্রকাশিত API কল করে, কোনো তাদের কপিরাইটেড কোড কপি করে না।
-- অ্যাপ আইকন ও স্প্ল্যাশ স্ক্রিন (`assets/`) এই প্রজেক্টের জন্য থেকে বানানো, কোনো বিদ্যমান অ্যাপ/লোগো থেকে কপি করা নয়।
-- `npm install` চালানোর পর `npx license-checker` (আলাদা করে ইনস্টল করতে হবে) দিয়ে পুরো dependency ট্রি-র লাইসেন্স আবার যাচাই করে নেওয়া ভালো অভ্যাস, কারণ প্রতিটি প্যাকেজ নিজের সাব-ডিপেন্ডেন্সি টেনে আনে।
+| লাইব্রেরি | লাইসেন্স | পরিচিত নিরাপত্তা ইস্যু | ব্যবহার |
+|---|---|---|---|
+| Expo SDK ও সব `expo-*` প্যাকেজ | MIT | নেই | ক্যামেরা, ফাইল সিস্টেম, রাউটিং, স্টোরেজ, বায়োমেট্রিক, ইত্যাদি |
+| React, React Native | MIT | নেই | কোর ফ্রেমওয়ার্ক |
+| `react-native-document-scanner-plugin` (WebsiteBeaver) | MIT | নেই — কোনো অ্যানালিটিক্স/ট্র্যাকিং কোড বান্ডল করা নেই | নেটিভ এজ-ডিটেকশন স্ক্যান (Android-এ Google ML Kit, iOS-এ Apple VisionKit-এর wrapper) |
+| `@react-native-ml-kit/text-recognition` (a7medev) | MIT | নেই | OCR (Google ML Kit / Apple Vision-এর wrapper) |
+| `pdf-lib` | MIT | নেই (Snyk-এ চেক করা হয়েছে — কোনো direct vulnerability পাওয়া যায়নি) | on-device PDF তৈরি |
+| `react-native-purchases` (RevenueCat) | MIT | নেই | সাবস্ক্রিপশন (Google Play Billing/Apple StoreKit wrapper) |
+| `@react-native-async-storage/async-storage` | MIT | নেই | লোকাল স্টোরেজ |
+| `@expo/vector-icons` (শুধু Ionicons সেট ব্যবহার করা হয়েছে) | MIT | নেই | আইকন |
+| `react-native-reanimated`, `react-native-gesture-handler`, `react-native-screens`, `react-native-safe-area-context`, `expo-linear-gradient` | MIT | নেই | UI/নেভিগেশন/গ্রেডিয়েন্ট |
+
+**কোনো GPL/AGPL/LGPL লাইব্রেরি ব্যবহার করা হয়নি** — পুরো তালিকা permissive লাইসেন্সের, তাই সোর্স কোড পাবলিশ করা বা লাইসেন্স "পাস-থ্রু" করার কোনো আইনি বাধ্যবাধকতা নেই।
+
+## থার্ড-পার্টি সার্ভিস ও ডেটা-প্রসেসিং নোট (Play Store/App Store রিভিউয়ের জন্য গুরুত্বপূর্ণ)
+
+কোড-লাইসেন্স ছাড়াও তিনটা বাইরের **সার্ভিস** (SDK-এর মাধ্যমে) ব্যবহার করা হয় — এগুলোর নিজস্ব শর্ত ও ডেটা-ডিসক্লোজার দায়িত্ব আছে, যা `PRIVACY.md`-এ বিস্তারিত লেখা হয়েছে:
+
+1. **Google ML Kit** (Android-এ স্ক্যান + OCR-এর জন্য) — ছবি/টেক্সট সম্পূর্ণ অন-ডিভাইসে প্রসেস হয়, Google-এর সার্ভারে পাঠানো হয় না। তবে Google-এর নিজস্ব শর্ত (developers.google.com/ml-kit/terms) অনুযায়ী **"পারফরম্যান্স মেট্রিক্স" (ব্যবহারকারীর কনটেন্ট নয়) Google-এ যেতে পারে** এবং এটা ইউজারকে জানানো ডেভেলপারের দায়িত্ব — তাই `PRIVACY.md`-এ এই লাইনটা স্পষ্ট করে লেখা হয়েছে।
+2. **RevenueCat** (ঐচ্ছিক সাবস্ক্রিপশনের জন্য) — সাবস্ক্রাইব করলে purchase history ও ডিভাইস আইডেন্টিফায়ার RevenueCat-এ যায় (তাদের নিজস্ব প্রাইভেসি পলিসি অনুযায়ী)। Google Play Data Safety ফর্মে এটা **"Financial info: purchase history — collected & shared, required for app functionality"** হিসেবে ডিক্লেয়ার করতে হবে (নিচের "Play Console-এ যা পূরণ করবেন" অংশ দেখুন)।
+3. **Google Drive API** (ঐচ্ছিক ব্যাকআপ) — শুধু `drive.file` স্কোপ ব্যবহার হয় (পুরো Drive নয়, শুধু অ্যাপ নিজে যে ফাইল বানায়) — `src/lib/googleAuth.ts`-এ কোডসহ কমেন্ট করা আছে।
+
+এই অ্যাপে **কোনো বিজ্ঞাপন SDK, অ্যানালিটিক্স/ক্র্যাশ-রিপোর্টিং SDK, বা ট্র্যাকিং লাইব্রেরি নেই** — উপরের তিনটাই একমাত্র বাইরের সার্ভিস, এবং তিনটাই ঐচ্ছিক/স্বচ্ছ।
+
+## Play Console-এ "Data Safety" ফর্মে যা পূরণ করবেন
+
+- **Financial info → Purchase history**: Collected, Shared (RevenueCat-এর সাথে), "Required for app functionality" — শুধু যদি ইউজার প্রিমিয়াম সাবস্ক্রাইব করেন।
+- **Files and docs**: "Not collected" (ডকুমেন্ট ফোনেই থাকে, বা ইউজার নিজে বাটনে চেপে নিজের Drive-এ পাঠান — এটা তৃতীয় পক্ষের সাথে "শেয়ারিং" নয়, কারণ এটা ইউজারের নিজের Google অ্যাকাউন্ট)।
+- **Device or other IDs**: শুধু যদি RevenueCat-এর advertising ID ইন্টিগ্রেশন চালু করেন (ডিফল্টে বন্ধ, তাই "Not collected" রাখা যায়)।
+- বাকি সব ক্যাটাগরি (লোকেশন, কন্টাক্টস, মেসেজ, ব্রাউজিং হিস্ট্রি ইত্যাদি) — **"Not collected"**।
+
+## নিয়মিত যাচাই
+
+- `npm install` চালানোর পর `npx license-checker` দিয়ে পুরো dependency ট্রি (সাব-ডিপেন্ডেন্সিসহ) আরেকবার লাইসেন্স যাচাই করে নেওয়া ভালো অভ্যাস।
+- `npm audit` চালিয়ে নতুন কোনো CVE আছে কিনা দেখে নিন — বিশেষ করে প্রোডাকশন বিল্ডের আগে।
+- ভবিষ্যতে নতুন কোনো প্যাকেজ যোগ করার আগে তার লাইসেন্স (MIT/Apache-2.0/BSD ঠিক আছে, GPL/AGPL এড়িয়ে চলুন) ও কোনো অ্যাড/ট্র্যাকিং কোড বান্ডল করা আছে কিনা যাচাই করে নিন।
+
+## অ্যাসেট
+
+- অ্যাপ আইকন, স্প্ল্যাশ স্ক্রিন ও adaptive icon (`assets/`) এই প্রজেক্টের জন্য কোড দিয়ে (PIL/numpy) থেকে বানানো — কোনো বিদ্যমান অ্যাপ/লোগো/ফন্ট থেকে কপি করা নয়, তাই কোনো ইমেজ-কপিরাইট ঝুঁকি নেই।
