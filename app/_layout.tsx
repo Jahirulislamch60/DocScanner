@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { isLockEnabled, isUnlocked, markLocked } from "@/lib/appLock";
 import { initPurchases } from "@/lib/subscription";
+import { useAutoUpdateCheck } from "@/lib/otaUpdates";
 import { colors } from "@/theme";
 
 function LockGate() {
@@ -45,6 +46,10 @@ export default function RootLayout() {
     // No-ops silently until a real RevenueCat key is configured in app.json.
     initPurchases();
   }, []);
+
+  // Silently checks for a published OTA update on launch + foreground, and
+  // asks the user (in Bengali) before applying it. No-op in Expo Go/dev.
+  useAutoUpdateCheck();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

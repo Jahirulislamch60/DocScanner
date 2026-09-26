@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Pressable, TextInput, Alert, Switch } from "react-native";
+import { View, Text, StyleSheet, Pressable, TextInput, Alert, Switch, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -9,7 +9,9 @@ import {
   disableAppLock,
   isBiometricAvailable,
 } from "@/lib/appLock";
+import { checkForUpdate, downloadAndApplyUpdate, getUpdateInfo } from "@/lib/otaUpdates";
 import { colors, gradients, radius, spacing } from "@/theme";
+import Constants from "expo-constants";
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -18,6 +20,8 @@ export default function SettingsScreen() {
   const [settingPin, setSettingPin] = useState(false);
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+  const updateInfo = getUpdateInfo();
 
   const load = async () => {
     setLockEnabled(await isLockEnabled());
@@ -63,6 +67,47 @@ export default function SettingsScreen() {
     setPin("");
     setConfirmPin("");
     Alert.alert("অ্যাপ লক চালু হয়েছে", "এখন থেকে অ্যাপ খুললে PIN চাইবে।");
+  };
+
+  const onCheckUpdate = async () => {
+    if (!updateInfo.isEnabled) {
+      Alert.alert(
+        "আপডেট চেক করা যাচ্ছে না",
+        "এই বিল্ডে (Expo Go বা ডেভেলপমেন্ট মোডে) OTA আপডেট চালু নেই। প্রোডাকশন/প্রিভিউ বিল্ডে এটা কাজ করবে।"
+      );
+      return;
+    }
+    setCheckingUpdate(true);
+    try {
+      const result = await checkForUpdate();
+      if (result.status === "up-to-date") {
+        Alert.alert("সর্বশেষ সংস্করণ", "আপনার অ্যাপটি ইতিমধ্যে সর্বশেষ আপডেটেড।");
+      } else if (result.status === "available") {
+        Alert.alert(
+          "নতুন আপডেট পাওয়া গেছে",
+          "ডাউনলোড করে এখনই ইন্সটল করবেন?",
+          [
+            { text: "বাতিল", style: "cancel" },
+            {
+              text: "ইন্সটল করুন",
+              onPress: async () => {
+                const ok = await downloadAndApplyUpdate();
+                if (!ok) {
+                  Alert.alert("সমস্যা হয়েছে", "আপডেট ডাউনলোড করা যায়নি, পরে আবার চেষ্টা করুন।");
+                }
+              },
+            },
+          ]
+        );
+      } else {
+        Alert.alert(
+          "চেক করা যায়নি",
+          "ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।"
+        );
+      }
+    } finally {
+      setCheckingUpdate(false);
+    }
   };
 
   return (
@@ -149,6 +194,25 @@ export default function SettingsScreen() {
           </View>
         </View>
       )}
+
+      <Pressable
+        style={[styles.row, { marginTop: spacing.md }]}
+        onPress={onCheckUpdate}
+        disabled={checkingUpdate}
+      >
+        <View style={{ flex: 1 }}>
+          <Text style={styles.rowTitle}>আপডেট চেক করুন</Text>
+          <Text style={styles.rowSub}>
+            সংস্করণ {Constants.expoConfig?.version ?? "1.0.0"}
+            {updateInfo.isEnabled ? ` · চ্যানেল: ${updateInfo.channel ?? "—"}` : " · ডেভেলপমেন্ট মোড"}
+          </Text>
+        </View>
+        {checkingUpdate ? (
+          <ActivityIndicator color={colors.primary} />
+        ) : (
+          <Ionicons name="refresh" size={20} color={colors.primary} />
+        )}
+      </Pressable>
 
       <Text style={styles.footnote}>
         PIN ভুলে গেলে অ্যাপ আনইনস্টল করে আবার ইনস্টল করা ছাড়া উপায় নেই — এতে সব লোকাল
