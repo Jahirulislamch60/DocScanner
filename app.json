@@ -13,6 +13,12 @@
       "backgroundColor": "#0F172A"
     },
     "assetBundlePatterns": ["**/*"],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/YOUR_EAS_PROJECT_ID"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.tajahir.scanvexa",
@@ -74,6 +80,9 @@
       "revenueCat": {
         "ios": "YOUR_REVENUECAT_IOS_API_KEY",
         "android": "YOUR_REVENUECAT_ANDROID_API_KEY"
+      },
+      "eas": {
+        "projectId": "YOUR_EAS_PROJECT_ID"
       }
     }
   }
